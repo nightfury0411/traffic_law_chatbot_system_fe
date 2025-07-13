@@ -23,11 +23,6 @@ type NavItem = {
 // 2. Sử dụng các icon từ lucide-react
 const navItems: NavItem[] = [
   {
-    icon: <LayoutGrid size={20} />, // Thêm size cho nhất quán
-    name: "Dashboard",
-    path: "/",
-  },
-  {
     icon: <FileText size={20} />,
     name: "Document Management",
     path: "/document-management",

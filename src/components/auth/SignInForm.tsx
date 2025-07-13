@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ChevronLeft, Eye, EyeOff } from "lucide-react"; // Sử dụng icon từ lucide-react
+import { ChevronLeft, Cookie, Eye, EyeOff } from "lucide-react"; // Sử dụng icon từ lucide-react
 
 // Giả sử các component này được import đúng
 import Label from "../form/Label";
@@ -20,7 +20,7 @@ export default function SignInForm() {
   const navigate = useNavigate(); // Hook để chuyển hướng
 
   // --- 2. Hàm xử lý khi submit form ---
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault(); // Ngăn trình duyệt tải lại trang
     setIsLoading(true);
     setError(null);
@@ -31,7 +31,7 @@ export default function SignInForm() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email:username, password }),
+        body: JSON.stringify({ email: username, password }),
       });
 
       const data = await response.json();
@@ -44,25 +44,38 @@ export default function SignInForm() {
       // --- 3. Lưu token và chuyển hướng khi thành công ---
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
-      navigate("/"); // Chuyển đến trang dashboard
+      document.cookie = "username=" + username + "; path=/; max-age=36000";
+      document.cookie = "password=" + password + "; path=/; max-age=36000";
+      navigate("/document-management"); // Chuyển đến trang document management
     } catch (err) {
       setError(err.message);
     } finally {
       setIsLoading(false); // Dừng trạng thái loading dù thành công hay thất bại
     }
   };
+  useEffect(() => {
+    const usernameCookie = getCookie("username");
+    if (usernameCookie) {
+      setUsername(usernameCookie);
+    }
 
+    const passwordCookie = getCookie("password");
+    if (passwordCookie) {
+      setPassword(passwordCookie);
+    }
+
+    const isCheckedCookie = getCookie("isChecked");
+    if (isCheckedCookie) {
+      setIsChecked(isCheckedCookie === "true");
+    }
+  });
+  const getCookie = (name: string) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+  };
   return (
     <div className="flex flex-col flex-1">
-      <div className="w-full max-w-md pt-10 mx-auto">
-        <Link
-          to="/"
-          className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          <ChevronLeft className="size-5" />
-          Back to dashboard
-        </Link>
-      </div>
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
         <div>
           <div className="mb-5 sm:mb-8">
@@ -136,19 +149,11 @@ export default function SignInForm() {
                       Keep me logged in
                     </span>
                   </div>
-                  <Link
-                    to="/reset-password"
-                    className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
-                  >
-                    Forgot password?
-                  </Link>
                 </div>
 
                 {/* --- 6. Hiển thị thông báo lỗi nếu có --- */}
                 {error && (
-                  <p className="text-sm text-center text-error-500">
-                    {error}
-                  </p>
+                  <p className="text-sm text-center text-error-500">{error}</p>
                 )}
 
                 <div>
@@ -164,18 +169,6 @@ export default function SignInForm() {
                 </div>
               </div>
             </form>
-
-            <div className="mt-5">
-              <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
-                Don&apos;t have an account? {""}
-                <Link
-                  to="/signup"
-                  className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
-                >
-                  Sign Up
-                </Link>
-              </p>
-            </div>
           </div>
         </div>
       </div>

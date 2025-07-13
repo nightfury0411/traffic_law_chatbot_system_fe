@@ -47,9 +47,7 @@ export default function UserTable({ users, loading, sortConfig, onSort, onEdit, 
                   <SortIcon direction={sortConfig.key === 'createdAt' ? sortConfig.direction : null} />
                 </div>
               </th>
-              <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
+             
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -120,24 +118,7 @@ export default function UserTable({ users, loading, sortConfig, onSort, onEdit, 
                       day: 'numeric'
                     })}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => onEdit(user)}
-                        className="text-blue-600 hover:text-blue-900 hover:bg-blue-50 p-2 rounded-lg transition-colors"
-                        title="Edit user"
-                      >
-                        <Edit size={16} />
-                      </button>
-                      <button
-                        onClick={() => onDelete(user.id)}
-                        className="text-red-600 hover:text-red-900 hover:bg-red-50 p-2 rounded-lg transition-colors"
-                        title="Delete user"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </td>
+                  
                 </tr>
               ))
             )}

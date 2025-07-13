@@ -79,16 +79,7 @@ const Header: React.FC<HeaderProps> = ({ onClick, onToggle }) => {
           </button>
 
           <Link to="/" className="lg:hidden">
-            <img
-              className="dark:hidden"
-              src="./images/logo/logo.svg"
-              alt="Logo"
-            />
-            <img
-              className="hidden dark:block"
-              src="./images/logo/logo-dark.svg"
-              alt="Logo"
-            />
+            <h2>Traffic’s Law Admin Page</h2>
           </Link>
 
           <button
@@ -152,9 +143,7 @@ const Header: React.FC<HeaderProps> = ({ onClick, onToggle }) => {
         >
           <div className="flex items-center gap-2 2xsm:gap-3">
 
-            {/* <!-- Dark Mode Toggler --> */}
-            <NotificationDropdown />
-            {/* <!-- Notification Menu Area --> */}
+           
           </div>
           {/* <!-- User Area --> */}
           <UserDropdown />

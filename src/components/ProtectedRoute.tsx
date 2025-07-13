@@ -1,7 +1,7 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   // Thay thế logic này bằng cách kiểm tra xác thực của bạn
   const isAuthenticated = localStorage.getItem("token"); // Ví dụ: kiểm tra token
 

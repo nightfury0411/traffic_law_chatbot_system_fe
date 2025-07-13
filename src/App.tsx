@@ -27,10 +27,8 @@ export default function App() {
               </ProtectedRoute>
             }
           >
-            <Route index path="/" element={<Home />} />
-
-
             <Route path="/document-management" element={<DocumentManagement />} />
+            <Route path="/" element={<UserManagement />} />
             <Route path="/user-management" element={<UserManagement />} />
 
           </Route>
