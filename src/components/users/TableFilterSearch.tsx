@@ -1,6 +1,6 @@
 // src/components/users/TableFilterSearch.jsx
-import React from 'react';
-import { Search, Filter, RefreshCw, UserPlus } from 'lucide-react';
+import React from "react";
+import { Search, Filter, RefreshCw, UserPlus } from "lucide-react";
 
 export default function TableFilterSearch({
   searchQuery,
@@ -15,10 +15,13 @@ export default function TableFilterSearch({
     <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
       <div className="flex flex-wrap gap-4 items-center">
         <div className="relative flex-1 min-w-[300px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+          <Search
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            size={20}
+          />
           <input
             type="text"
-            placeholder="Search by name or email..."
+            placeholder="Search by email"
             value={searchQuery}
             onChange={onSearchChange}
             onKeyPress={onSearchSubmit}
@@ -33,7 +36,7 @@ export default function TableFilterSearch({
             onChange={onFilterChange}
             className="px-4 py-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
           >
-            <option value="">All Statuses</option>
+            <option value="">All Status</option>
             <option value="true">Active</option>
             <option value="false">Inactive</option>
           </select>
@@ -46,8 +49,6 @@ export default function TableFilterSearch({
           <RefreshCw size={18} />
           Refresh
         </button>
-
-
       </div>
     </div>
   );

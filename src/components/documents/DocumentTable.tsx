@@ -1,6 +1,6 @@
 // src/components/documents/DocumentTable.jsx
-import React from 'react';
-import { FileText, Download, Edit, Trash2 } from 'lucide-react';
+import React from "react";
+import { FileText, Download, Edit, Trash2 } from "lucide-react";
 
 export default function DocumentTable({
   documents,
@@ -10,55 +10,59 @@ export default function DocumentTable({
   onEdit, // function to set selected document in parent
   onShowEditModal, // function to open edit modal in parent
   onDelete,
-  API_BASE_URL
+  API_BASE_URL,
 }) {
   const handleDownload = async (docId) => {
-  const token = localStorage.getItem('token'); // Get the token here
+    const token = localStorage.getItem("token"); // Get the token here
 
-  if (!token) {
-    alert('You are not logged in. Please log in to download.');
-    // Redirect to login page or handle appropriately
-    return;
-  }
-
-  try {
-    const response = await fetch(`${API_BASE_URL}/documents/${docId}/download`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`, // Use the retrieved token
-      },
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to download document: ${response.status} ${response.statusText} - ${errorText}`);
+    if (!token) {
+      alert("You are not logged in. Please log in to download.");
+      // Redirect to login page or handle appropriately
+      return;
     }
 
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/documents/${docId}/download`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`, // Use the retrieved token
+          },
+        }
+      );
 
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', `document_${docId}.pdf`);
-    document.body.appendChild(link);
-    link.click();
-    link.parentNode.removeChild(link);
-    window.URL.revokeObjectURL(url);
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          `Failed to download document: ${response.status} ${response.statusText} - ${errorText}`
+        );
+      }
 
-  } catch (error) {
-    console.error('Download error:', error);
-    alert('Error downloading document. Please try again.');
-  }
-};
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
 
-// In your component:
-<button
-  onClick={() => handleDownload(doc.id)} // Now you don't need to pass token here
-  className="text-blue-600 hover:text-blue-900 transition"
-  title="Download"
->
-  Download
-</button>
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `document_${docId}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download error:", error);
+      alert("Error downloading document. Please try again.");
+    }
+  };
+
+  // In your component:
+  <button
+    onClick={() => handleDownload(doc.id)} // Now you don't need to pass token here
+    className="text-blue-600 hover:text-blue-900 transition"
+    title="Download"
+  >
+    Download
+  </button>;
   return (
     <div className="bg-white rounded-lg shadow-sm overflow-hidden">
       <div className="overflow-x-auto">
@@ -69,28 +73,55 @@ export default function DocumentTable({
                 <input
                   type="checkbox"
                   onChange={(e) => {
-                    setSelectedDocumentIds(e.target.checked ? documents.map(doc => doc.id) : []);
+                    setSelectedDocumentIds(
+                      e.target.checked ? documents.map((doc) => doc.id) : []
+                    );
                   }}
-                  checked={documents.length > 0 && selectedDocumentIds.length === documents.length}
+                  checked={
+                    documents.length > 0 &&
+                    selectedDocumentIds.length === documents.length
+                  }
                   className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Document</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Size</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Uploaded By</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Document
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Type
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Size
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Status
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Uploaded By
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {loading ? (
               <tr>
-                <td colSpan="7" className="px-6 py-10 text-center text-gray-500">Loading...</td>
+                <td
+                  colSpan="7"
+                  className="px-6 py-10 text-center text-gray-500"
+                >
+                  Loading...
+                </td>
               </tr>
             ) : documents.length === 0 ? (
               <tr>
-                <td colSpan="7" className="px-6 py-10 text-center text-gray-500">No documents found.</td>
+                <td
+                  colSpan="7"
+                  className="px-6 py-10 text-center text-gray-500"
+                >
+                  No documents found.
+                </td>
               </tr>
             ) : (
               documents.map((doc) => (
@@ -101,9 +132,14 @@ export default function DocumentTable({
                       checked={selectedDocumentIds.includes(doc.id)}
                       onChange={(e) => {
                         if (e.target.checked) {
-                          setSelectedDocumentIds([...selectedDocumentIds, doc.id]);
+                          setSelectedDocumentIds([
+                            ...selectedDocumentIds,
+                            doc.id,
+                          ]);
                         } else {
-                          setSelectedDocumentIds(selectedDocumentIds.filter(id => id !== doc.id));
+                          setSelectedDocumentIds(
+                            selectedDocumentIds.filter((id) => id !== doc.id)
+                          );
                         }
                       }}
                       className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
@@ -113,31 +149,39 @@ export default function DocumentTable({
                     <div className="flex items-center">
                       <FileText className="w-5 h-5 mr-3 text-gray-500" />
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{doc.title}</div>
+                        <div className="text-sm font-medium text-gray-900">
+                          {doc.title}
+                        </div>
                         {doc.description && (
-                          <div className="text-xs text-gray-500 truncate w-48">{doc.description}</div>
+                          <div className="text-xs text-gray-500 truncate w-48">
+                            {doc.description}
+                          </div>
                         )}
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {doc.fileType ? doc.fileType.toUpperCase() : 'N/A'}
+                    {doc.fileType ? doc.fileType.toUpperCase() : "N/A"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {doc.size ? `${(doc.size / 1024 / 1024).toFixed(2)} MB` : 'N/A'}
+                    {doc.size
+                      ? `${(doc.size / 1024 / 1024).toFixed(2)} MB`
+                      : "N/A"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      doc.isActive
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-yellow-100 text-yellow-800'
-                    }`}>
-                      {doc.isActive ? 'Active' : 'Inactive'}
+                    <span
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        doc.isActive
+                          ? "bg-green-100 text-green-800"
+                          : "bg-yellow-100 text-yellow-800"
+                      }`}
+                    >
+                      {doc.isActive ? "Active" : "Inactive"}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
-                      {/* Assuming doc.uploadedBy would be available from API, otherwise show 'Admin' */}
-                      {doc.uploadedBy || 'Admin'} 
+                    {/* Assuming doc.uploadedBy would be available from API, otherwise show 'Admin' */}
+                    {doc.uploadedBy?.username || "Admin"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
                     <div className="flex gap-2">
@@ -149,7 +193,10 @@ export default function DocumentTable({
                         <Download className="w-5 h-5" />
                       </button>
                       <button
-                        onClick={() => { onEdit(doc); onShowEditModal(true); }}
+                        onClick={() => {
+                          onEdit(doc);
+                          onShowEditModal(true);
+                        }}
                         className="text-indigo-600 hover:text-indigo-900 transition"
                         title="Edit"
                       >
