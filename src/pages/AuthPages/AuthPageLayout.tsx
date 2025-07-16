@@ -17,7 +17,6 @@ export default function AuthLayout({
             {/* <!-- ===== Common Grid Shape Start ===== --> */}
             <GridShape />
             <div className="flex flex-col items-center max-w-xs">
-             
               <p className="text-center text-gray-400 dark:text-white/60">
                 Traffic’s Law Admin Page
               </p>

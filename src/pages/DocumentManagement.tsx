@@ -317,23 +317,6 @@ export default function DocumentManagementPage() {
               </div>
             </div>
 
-            {/* Filter by Type */}
-            <select
-              value={filter.type}
-              onChange={(e) => {
-                setFilter({ ...filter, type: e.target.value });
-                setCurrentPage(1); // Reset page on filter change
-              }}
-              className="px-4 py-2 border border-gray-300 bg-white text-gray-900 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="">All Types</option>
-              {fileTypes.map((type) => (
-                <option key={type} value={type}>
-                  {type.toUpperCase()}
-                </option>
-              ))}
-            </select>
-
             {/* Filter by Status (isActive) */}
             <select
               value={filter.isActive}
