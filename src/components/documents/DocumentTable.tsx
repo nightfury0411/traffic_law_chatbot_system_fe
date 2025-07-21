@@ -2,17 +2,40 @@
 import React from "react";
 import { FileText, Download, Edit, Trash2 } from "lucide-react";
 
+// Định nghĩa interface cho Document
+interface Document {
+  id: string;
+  title: string;
+  description?: string;
+  fileType?: string;
+  file?: File;
+  size?: number;
+  isActive?: boolean;
+  uploadedBy?: { username?: string };
+}
+
+interface DocumentTableProps {
+  documents: Document[];
+  loading: boolean;
+  selectedDocumentIds: string[];
+  setSelectedDocumentIds: (ids: string[]) => void;
+  onEdit: (doc: Document) => void;
+  onShowEditModal: (show: boolean) => void;
+  onDelete: (id: string) => void;
+  API_BASE_URL: string;
+}
+
 export default function DocumentTable({
   documents,
   loading,
   selectedDocumentIds,
   setSelectedDocumentIds,
-  onEdit, // function to set selected document in parent
-  onShowEditModal, // function to open edit modal in parent
+  onEdit,
+  onShowEditModal,
   onDelete,
   API_BASE_URL,
-}) {
-  const handleDownload = async (docId) => {
+}: DocumentTableProps) {
+  const handleDownload = async (docId: string) => {
     const token = localStorage.getItem("token"); // Get the token here
 
     if (!token) {
@@ -42,12 +65,30 @@ export default function DocumentTable({
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
 
+      // Lấy tên file từ header nếu có
+      let filename = `document_${docId}`;
+      const disposition = response.headers.get("Content-Disposition");
+      if (disposition && disposition.includes("filename=")) {
+        const match = disposition.match(/filename="?([^";]+)"?/);
+        if (match && match[1]) {
+          filename = match[1];
+        }
+      } else {
+        // Nếu có fileType, thêm đuôi mở rộng phù hợp
+        const doc = documents.find((d) => d.id === docId);
+        if (doc && doc.fileType) {
+          filename += `.${doc.fileType.toLowerCase()}`;
+        } else {
+          filename += `.bin`;
+        }
+      }
+
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", `document_${docId}.pdf`);
+      link.setAttribute("download", filename);
       document.body.appendChild(link);
       link.click();
-      link.parentNode.removeChild(link);
+      if (link.parentNode) link.parentNode.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Download error:", error);
@@ -55,14 +96,6 @@ export default function DocumentTable({
     }
   };
 
-  // In your component:
-  <button
-    onClick={() => handleDownload(doc.id)} // Now you don't need to pass token here
-    className="text-blue-600 hover:text-blue-900 transition"
-    title="Download"
-  >
-    Download
-  </button>;
   return (
     <div className="bg-white rounded-lg shadow-sm overflow-hidden">
       <div className="overflow-x-auto">
@@ -87,9 +120,9 @@ export default function DocumentTable({
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Document
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Type
-              </th>
+              </th> */}
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Size
               </th>
@@ -108,7 +141,7 @@ export default function DocumentTable({
             {loading ? (
               <tr>
                 <td
-                  colSpan="7"
+                  colSpan={7}
                   className="px-6 py-10 text-center text-gray-500"
                 >
                   Loading...
@@ -117,7 +150,7 @@ export default function DocumentTable({
             ) : documents.length === 0 ? (
               <tr>
                 <td
-                  colSpan="7"
+                  colSpan={7}
                   className="px-6 py-10 text-center text-gray-500"
                 >
                   No documents found.
@@ -160,9 +193,13 @@ export default function DocumentTable({
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {doc.fileType ? doc.fileType.toUpperCase() : "N/A"}
-                  </td>
+                  {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {doc.fileType
+                      ? doc.fileType.toUpperCase()
+                      : doc.file && doc.file.type
+                        ? doc.file.type.split("/")[1]?.toUpperCase() || doc.file.type
+                        : "N/A"}
+                  </td> */}
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {doc.size
                       ? `${(doc.size / 1024 / 1024).toFixed(2)} MB`
@@ -185,13 +222,13 @@ export default function DocumentTable({
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
                     <div className="flex gap-2">
-                      <button
+                      {/* <button
                         onClick={() => handleDownload(doc.id)}
                         className="text-blue-600 hover:text-blue-900 transition"
                         title="Download"
                       >
                         <Download className="w-5 h-5" />
-                      </button>
+                      </button> */}
                       <button
                         onClick={() => {
                           onEdit(doc);
